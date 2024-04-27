@@ -1,4 +1,9 @@
 import { useState } from 'react';
+import { collection, addDoc } from "firebase/firestore"; 
+import { db } from '../../database/firebaseConfig'; 
+import {  doc, setDoc } from "firebase/firestore"; 
+
+
 
 const CadastroUsuario = () => {
 
@@ -12,17 +17,29 @@ const CadastroUsuario = () => {
   )
 
 
+
+
   const alteraFormulario = (e) => {
     const { name, value } = e.target;
     setFormulario({ ...formulario, [name]: value });
   };
 
 
-  const meuSubmit = (evento) => {
-    evento.preventDefault()
-    console.log(formulario)
+  const meuSubmit =  async (evento) => {
+    evento.preventDefault() // evita o comportamento padrao do form
+    console.log(formulario) // quem é formulario?
+    // formulario e´um objeto de uma state(estado é a forma que o react usa ) 
+
+  const docRef = await addDoc(collection(db, "usuarios"), formulario);
 
   }
+
+  // esse é uma outra forma de ter o botao, escolha um modelo so ou esse ou aquele  
+   const salvar2 = async () => {
+    await setDoc(doc(db, "usuarios", formulario.email),formulario);
+   
+   }
+  
 
   return (
     <div>
@@ -49,7 +66,11 @@ const CadastroUsuario = () => {
           onChange={alteraFormulario} />
 
         <button type='submit'>Salvar</button>
+        
+
       </form>
+
+        <button onClick={salvar2}>Salvar2</button>
 
     </div>
   );
